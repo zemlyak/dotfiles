@@ -62,14 +62,14 @@ return require('packer').startup(function(use)
 	use {
             "nvim-treesitter/nvim-treesitter",
             event = "BufRead",
-            config = function()
-                require "plugins.treesitter"
-            end
         }
 
         --use 'nvim-treesitter/nvim-treesitter-textobjects'
         
-	use 'kabouzeid/nvim-lspinstall'
+        use {
+            "kabouzeid/nvim-lspinstall",
+            event = "BufRead"
+        }
         
         use {
             "neovim/nvim-lspconfig",
@@ -96,6 +96,19 @@ return require('packer').startup(function(use)
             event = "BufRead",
             setup = function()
                 require("plugins.indent").blankline()
+            end
+        }
+
+        use {
+            "tweekmonster/startuptime.vim",
+            cmd = "StartupTime"
+        }
+
+        use {
+            "onsails/lspkind-nvim",
+            event = "BufRead",
+            config = function()
+                require("plugins.lspkind").lspkind()
             end
         }
 

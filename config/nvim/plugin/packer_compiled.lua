@@ -90,6 +90,12 @@ _G.packer_plugins = {
     needs_bufread = false,
     path = "/home/zemlyak/.local/share/nvim/site/pack/packer/opt/indent-blankline.nvim"
   },
+  ["lspkind-nvim"] = {
+    config = { "\27LJ\1\2?\0\0\2\0\3\0\0064\0\0\0%\1\1\0>\0\2\0027\0\2\0>\0\1\1G\0\1\0\flspkind\20plugins.lspkind\frequire\0" },
+    loaded = false,
+    needs_bufread = false,
+    path = "/home/zemlyak/.local/share/nvim/site/pack/packer/opt/lspkind-nvim"
+  },
   ["lualine.nvim"] = {
     config = { "\27LJ\1\0022\0\0\2\0\2\0\0044\0\0\0%\1\1\0>\0\2\1G\0\1\0\23plugins.statusline\frequire\0" },
     loaded = true,
@@ -126,16 +132,20 @@ _G.packer_plugins = {
   },
   ["nvim-lspconfig"] = {
     config = { "\27LJ\1\0021\0\0\2\0\2\0\0044\0\0\0%\1\1\0>\0\2\1G\0\1\0\22plugins.lspconfig\frequire\0" },
-    loaded = true,
+    load_after = {
+      ["nvim-lspinstall"] = true
+    },
+    loaded = false,
     needs_bufread = false,
     path = "/home/zemlyak/.local/share/nvim/site/pack/packer/opt/nvim-lspconfig"
   },
   ["nvim-lspinstall"] = {
-    loaded = true,
-    path = "/home/zemlyak/.local/share/nvim/site/pack/packer/start/nvim-lspinstall"
+    after = { "nvim-lspconfig" },
+    loaded = false,
+    needs_bufread = false,
+    path = "/home/zemlyak/.local/share/nvim/site/pack/packer/opt/nvim-lspinstall"
   },
   ["nvim-treesitter"] = {
-    config = { "\27LJ\1\0022\0\0\2\0\2\0\0044\0\0\0%\1\1\0>\0\2\1G\0\1\0\23plugins.treesitter\frequire\0" },
     loaded = false,
     needs_bufread = true,
     path = "/home/zemlyak/.local/share/nvim/site/pack/packer/opt/nvim-treesitter"
@@ -149,6 +159,12 @@ _G.packer_plugins = {
     loaded = false,
     needs_bufread = false,
     path = "/home/zemlyak/.local/share/nvim/site/pack/packer/opt/packer.nvim"
+  },
+  ["startuptime.vim"] = {
+    commands = { "StartupTime" },
+    loaded = false,
+    needs_bufread = false,
+    path = "/home/zemlyak/.local/share/nvim/site/pack/packer/opt/startuptime.vim"
   },
   ["switch.vim"] = {
     loaded = true,
@@ -173,14 +189,22 @@ time([[Setup for indent-blankline.nvim]], false)
 time([[Config for lualine.nvim]], true)
 try_loadstring("\27LJ\1\0022\0\0\2\0\2\0\0044\0\0\0%\1\1\0>\0\2\1G\0\1\0\23plugins.statusline\frequire\0", "config", "lualine.nvim")
 time([[Config for lualine.nvim]], false)
+
+-- Command lazy-loads
+time([[Defining lazy-load commands]], true)
+if vim.fn.exists(":StartupTime") ~= 2 then
+vim.cmd [[command! -nargs=* -range -bang -complete=file StartupTime lua require("packer.load")({'startuptime.vim'}, { cmd = "StartupTime", l1 = <line1>, l2 = <line2>, bang = <q-bang>, args = <q-args> }, _G.packer_plugins)]]
+end
+time([[Defining lazy-load commands]], false)
+
 vim.cmd [[augroup packer_load_aucmds]]
 vim.cmd [[au!]]
   -- Event lazy-loads
 time([[Defining lazy-load event autocommands]], true)
-vim.cmd [[au VimEnter * ++once lua require("packer.load")({'packer.nvim'}, { event = "VimEnter *" }, _G.packer_plugins)]]
-vim.cmd [[au InsertCharPre * ++once lua require("packer.load")({'LuaSnip', 'friendly-snippets'}, { event = "InsertCharPre *" }, _G.packer_plugins)]]
 vim.cmd [[au InsertEnter * ++once lua require("packer.load")({'nvim-compe'}, { event = "InsertEnter *" }, _G.packer_plugins)]]
-vim.cmd [[au BufRead * ++once lua require("packer.load")({'indent-blankline.nvim', 'nvim-treesitter'}, { event = "BufRead *" }, _G.packer_plugins)]]
+vim.cmd [[au InsertCharPre * ++once lua require("packer.load")({'LuaSnip', 'friendly-snippets'}, { event = "InsertCharPre *" }, _G.packer_plugins)]]
+vim.cmd [[au VimEnter * ++once lua require("packer.load")({'packer.nvim'}, { event = "VimEnter *" }, _G.packer_plugins)]]
+vim.cmd [[au BufRead * ++once lua require("packer.load")({'indent-blankline.nvim', 'lspkind-nvim', 'nvim-treesitter', 'nvim-lspinstall'}, { event = "BufRead *" }, _G.packer_plugins)]]
 time([[Defining lazy-load event autocommands]], false)
 vim.cmd("augroup END")
 if should_profile then save_profiles() end
