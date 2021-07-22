@@ -9,31 +9,72 @@ end
 
 local use = packer.use
 
+return packer.startup(
+    function()
+        use {
+            "wbthomason/packer.nvim",
+            event = "VimEnter"
+        }
 
-return require('packer').startup(function(use)
-        use { 
-	'wbthomason/packer.nvim',
-	event = "VimEnter"
-	}
-        
-	use {
-	'Shougo/vimproc.vim',
-	run = "make -j4"
-	}
-	
-	use 'akinsho/nvim-bufferline.lua'
-        
-	use 'AndrewRadev/switch.vim'
-        
+        use {
+            "akinsho/nvim-bufferline.lua",
+        }
+
         use {
             'hoob3rt/lualine.nvim',
             config = function()
                 require "plugins.statusline"
             end
         }
-        
-	use 'Raimondi/delimitMate'
-        
+
+        -- color related stuff
+        use {
+            'shaunsingh/nord.nvim',
+            after = "packer.nvim",
+            config = function()
+                require "theme"
+            end
+        }
+
+        use {
+            "norcalli/nvim-colorizer.lua",
+            event = "BufRead",
+            config = function()
+                require("plugins.others").colorizer()
+            end
+        }
+
+        -- language related plugins
+        use {
+            "nvim-treesitter/nvim-treesitter",
+            event = "BufRead",
+            config = function()
+                require "plugins.treesitter"
+            end
+        }
+
+        use {
+            "kabouzeid/nvim-lspinstall",
+            event = "BufRead"
+        }
+
+        use {
+            "neovim/nvim-lspconfig",
+            after = "nvim-lspinstall",
+            config = function()
+                require "plugins.lspconfig"
+            end
+        }
+
+        use {
+            "onsails/lspkind-nvim",
+            event = "BufRead",
+            config = function()
+                require("plugins.others").lspkind()
+            end
+        }
+
+        -- load compe in insert mode only
         use {
             "hrsh7th/nvim-compe",
             event = "InsertEnter",
@@ -57,45 +98,63 @@ return require('packer').startup(function(use)
             }
         }
 
-	use 'kyazdani42/nvim-web-devicons'
-
-	use {
-            "nvim-treesitter/nvim-treesitter",
-            event = "BufRead",
+        -- file managing , picker etc
+        use {
+            "kyazdani42/nvim-tree.lua",
+            cmd = "NvimTreeToggle",
+            config = function()
+                require "plugins.nvimtree"
+            end
         }
 
-        --use 'nvim-treesitter/nvim-treesitter-textobjects'
-        
         use {
-            "kabouzeid/nvim-lspinstall",
+            "kyazdani42/nvim-web-devicons",
+            after = "nord.nvim",
+        }
+
+        use {
+            "nvim-lua/plenary.nvim",
             event = "BufRead"
         }
-        
+
         use {
-            "neovim/nvim-lspconfig",
-            after = "nvim-lspinstall",
+            "nvim-lua/popup.nvim",
+            after = "plenary.nvim"
+        }
+
+        -- misc plugins
+        use {
+            "windwp/nvim-autopairs",
+            after = "nvim-compe",
             config = function()
-                require "plugins.lspconfig"
+                require "plugins.autopairs"
             end
         }
-        
+
         use {
-            'shaunsingh/nord.nvim',
-            after = "packer.nvim",
+            "andymass/vim-matchup",
+            event = "CursorMoved"
+        }
+
+        use {
+            "terrortylor/nvim-comment",
+            cmd = "CommentToggle",
             config = function()
-                require "theme"
+                require("plugins.others").comment()
             end
         }
-        
-	use 'mhinz/vim-startify'
-        
-	use 'scrooloose/nerdtree'
-	
-	use {
-            "lukas-reineke/indent-blankline.nvim",
-            event = "BufRead",
+
+        use {
+            "glepnir/dashboard-nvim",
+            cmd = {
+                "Dashboard",
+                "DashboardNewFile",
+                "DashboardJumpMarks",
+                "SessionLoad",
+                "SessionSave"
+            },
             setup = function()
-                require("plugins.indent").blankline()
+                require "plugins.dashboard"
             end
         }
 
@@ -104,13 +163,23 @@ return require('packer').startup(function(use)
             cmd = "StartupTime"
         }
 
+        -- smooth scroll
         use {
-            "onsails/lspkind-nvim",
-            event = "BufRead",
+            "karb94/neoscroll.nvim",
+            event = "WinScrolled",
             config = function()
-                require("plugins.lspkind").lspkind()
+                require("plugins.others").neoscroll()
             end
         }
 
-        use 'norcalli/nvim-colorizer.lua'
-end)
+        --   use "alvan/vim-closetag" -- for html autoclosing tag
+
+        use {
+            "lukas-reineke/indent-blankline.nvim",
+            event = "BufRead",
+            setup = function()
+                require("plugins.others").blankline()
+            end
+        }
+    end
+)

@@ -6,8 +6,10 @@ async =
     vim.schedule_wrap(
         function()
             require "pluginList"
-	    require "plugins.bufferline"
-	    vim.cmd("e")
+            require "plugins.bufferline"
+            require "mappings"
+            require("utils").hideStuff()
+
             async:close()
         end
     )
