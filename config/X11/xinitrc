@@ -2,6 +2,6 @@ pipewire & pipewire-pulse & pipewire-media-session &
 xrdb -merge ~/.config/Xresources
 xinput set-prop pointer:"COMPANY  USB Device " "libinput Natural Scrolling Enabled" 1
 xwallpaper --zoom ~/pictures/nord.jpg
-xcompmgr &
+picom --daemon
 exec dwm
 #exec startxfce4
